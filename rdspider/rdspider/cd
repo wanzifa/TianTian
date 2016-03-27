@@ -41,11 +41,7 @@ class SQLStorePipeline(object):
             log.msg("Item already stored in db: %s" % item,
                     level=log.DEBUG)
         else:
-            tx.execute("""
-            insert into guoke(title, author, author_url, time, content)
-            values(%s,%s,%s,%s,%s)
-            """, (item['title'],item['author'],item['author_url'], item['time'], item['content']))
-        # (item['title'],item['author'],item['author_url'],item['time']))
+            tx.execute("insert into guoke(title,author,author_url,time,content) values(%s,%s,%s,%s,%s)",  item['title'],item['author'],item['author_url'],item['time'],item['content'])
             log.msg("Item stored in db: %s" % item, level=log.DEBUG)
 
     def handler_error(self, e):
