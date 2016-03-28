@@ -7,7 +7,7 @@
 </hr>
 
 <h3>工具</h3></br>
-<hr>
+
 + Django
 
 + Scrapy
