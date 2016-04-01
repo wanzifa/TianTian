@@ -18,11 +18,11 @@ class RdspiderPipeline(object):
         return item
 
 
-class GuoKeStorePipeline(object):
+class SQLStorePipeline(object):
 
     def __init__(self):
         self.dbpool = adbapi.ConnectionPool('MySQLdb', db='mydb',
-                user='root', passwd='wanzifa',
+                user='root', passwd=os.environ.get('MYSQL_PASSWORD'),
                 cursorclass=MySQLdb.cursors.DictCursor,
                 charset='utf8', use_unicode=True)
 
@@ -33,51 +33,36 @@ class GuoKeStorePipeline(object):
         return item
 
     def _conditional_insert(self, tx, item):
-        tx.execute("""
-                select * from guoke  where title = %s and author = %s and time = %s and category = %s 
-        """,(item['title'], item['author'], item['time'], item['category']))
-        result = tx.fetchone()
-        if result:
-            log.msg("Item already stored in db: %s" % item,
+        if item['name'] == 'guoke':
+            tx.execute(""" 
+                   select * from guoke where author=%s and title=%s 
+            """,(item['author'],item['title']))
+            result = tx.fetchone()
+            if result:
+                log.msg("Item already stored in db: %s" % item.name,
                     level=log.DEBUG)
-        else:
-            tx.execute("""
-            insert into guoke(title, author, author_url, time, content, category)
-            values(%s,%s,%s,%s,%s,%s)
-            """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['category']))
-        # (item['title'],item['author'],item['author_url'],item['time']))
-            log.msg("Item stored in db: %s" % item, level=log.DEBUG)
-
+            else:
+                tx.execute("""
+                insert into guoke(title, author, author_url, time, content, category)
+                values(%s,%s,%s,%s,%s,%s) 
+                """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['category']))
+                log.msg("Item stored in db: %s" % item, level=log.DEBUG)
+        elif item['name'] == 'guoke':
+            tx.execute(""" 
+                   select * from huxiu where author=%s and title=%s 
+            """,(item['author'],item['title']))
+            result = tx.fetchone()
+            if result:
+                log.msg("Item already stored in db: %s" % item.name,
+                    level=log.DEBUG)
+            else:
+                tx.execute("""
+                insert into huxiu(title, author, author_url, time, content, category)
+                values(%s,%s,%s,%s,%s,%s) 
+                """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['category']))
+                log.msg("Item stored in db: %s" % item, level=log.DEBUG)
+   
     def handler_error(self, e):
         log.err(e)
 
-class HuxiuStorePipline(object):
-    
-    def __init__(self):
-        self.dbpool = adbapi.ConnectionPool('MySQLdb', db='mydb',
-                user='root', passwd=os.environ.get('MYSQL_PASSWORD',
-                cursorclass=MySQLdb.cursors.DictCursor,
-                charset='utf8', use_unicode=True)
-    
-    def process_item(self, item, spider):
-        query = self.dbpool.runInteraction(self._conditional_insert,
-                item)
-        query.addErrback(self.handler_error)
-        return item
-
-    def _conditional_insert(self, tx, item):
-        tx.execute("""select * from huxiu where title = %s and author = %s and 
-                    time = %s """, (item['title'],item['author'],item['time']))
-        result = tx.fetchone()
-        if result:
-            logging.DEBUG("Item already stored in db: %s" % item)
-        else:
-            tx.execute("""
-                 insert into huxiu(title, author, author_url, time, content)
-                 values(%s,%s,%s,%s,%s)
-                 """, (item['title'],item['author'],item['author_url'],item['time'],item['content']))
-            logging.info("Item stored in db:%s" % item)
-
-    def handler_error(self, e):
-        logging.error(e)
 

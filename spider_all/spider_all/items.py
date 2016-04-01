@@ -12,6 +12,7 @@ class GuoKeItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     id = scrapy.Field()
+    name = scrapy.Field()
     title = scrapy.Field()
     author = scrapy.Field()
     content = scrapy.Field()
@@ -22,8 +23,10 @@ class GuoKeItem(scrapy.Item):
 
 class HuxiuItem(scrapy.Item):
     id = scrapy.Field()
+    name = scrapy.Field()
     title = scrapy.Field()
     author = scrapy.Field()
     author_url = scrapy.Field()
     time = scrapy.Field()
     content = scrapy.Field()
+    category = scrapy.Field()

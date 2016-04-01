@@ -21,8 +21,7 @@ MYSQL_USER = 'root'
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
 
 ITEM_PIPELINES = {
-        'spider_all.pipelines.GuoKeStorePipeline': 300,
-        'spider_all.pipelines.HuxiuStorePipeline': 400
+        'spider_all.pipelines.SQLStorePipeline': 300,
 }
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'rdspider (+http://www.yourdomain.com)'
