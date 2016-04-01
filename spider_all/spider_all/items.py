@@ -17,3 +17,13 @@ class GuoKeItem(scrapy.Item):
     content = scrapy.Field()
     time = scrapy.Field()
     author_url = scrapy.Field()
+    category = scrapy.Field()
+
+
+class HuxiuItem(scrapy.Item):
+    id = scrapy.Field()
+    title = scrapy.Field()
+    author = scrapy.Field()
+    author_url = scrapy.Field()
+    time = scrapy.Field()
+    content = scrapy.Field()

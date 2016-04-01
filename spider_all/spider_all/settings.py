@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for GuoKeSpider project
+# Scrapy settings for rdspider project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -8,15 +8,24 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+import os
 
-BOT_NAME = 'GuoKeSpider'
+BOT_NAME = 'spider_all'
 
-SPIDER_MODULES = ['GuoKeSpider.spiders']
-NEWSPIDER_MODULE = 'GuoKeSpider.spiders'
+SPIDER_MODULES = ['spider_all.spiders']
+NEWSPIDER_MODULE = 'spider_all.spiders'
 
+MYSQL_HOST = 'localhost'
+MYSQL_DBNAME = 'mydb'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
 
+ITEM_PIPELINES = {
+        'spider_all.pipelines.GuoKeStorePipeline': 300,
+        'spider_all.pipelines.HuxiuStorePipeline': 400
+}
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'GuoKeSpider (+http://www.yourdomain.com)'
+#USER_AGENT = 'rdspider (+http://www.yourdomain.com)'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS=32
@@ -44,13 +53,13 @@ NEWSPIDER_MODULE = 'GuoKeSpider.spiders'
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'GuoKeSpider.middlewares.MyCustomSpiderMiddleware': 543,
+#    'rdspider.middlewares.MyCustomSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'GuoKeSpider.middlewares.MyCustomDownloaderMiddleware': 543,
+#    'rdspider.middlewares.MyCustomDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -62,7 +71,7 @@ NEWSPIDER_MODULE = 'GuoKeSpider.spiders'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'GuoKeSpider.pipelines.SomePipeline': 300,
+#    'rdspider.pipelines.SomePipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
