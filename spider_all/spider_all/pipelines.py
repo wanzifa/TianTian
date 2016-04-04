@@ -9,7 +9,6 @@ from twisted.enterprise import adbapi
 import datetime
 import MySQLdb.cursors
 import sys
-from scrapy import log
 import os
 import logging
 
@@ -39,30 +38,28 @@ class SQLStorePipeline(object):
             """,(item['author'],item['title']))
             result = tx.fetchone()
             if result:
-                log.msg("Item already stored in db: %s" % item.name,
-                    level=log.DEBUG)
+                logging.debug("Item already stored in db: %s" % item['name'])
             else:
                 tx.execute("""
                 insert into guoke(title, author, author_url, time, content, category)
                 values(%s,%s,%s,%s,%s,%s) 
                 """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['category']))
-                log.msg("Item stored in db: %s" % item, level=log.DEBUG)
-        elif item['name'] == 'guoke':
+                logging.info("Item stored in db: %s" % item)
+        elif item['name'] == 'huxiu':
             tx.execute(""" 
                    select * from huxiu where author=%s and title=%s 
             """,(item['author'],item['title']))
             result = tx.fetchone()
             if result:
-                log.msg("Item already stored in db: %s" % item.name,
-                    level=log.DEBUG)
+                logging.debug("Item already stored in db: %s" % item['name'])
             else:
                 tx.execute("""
                 insert into huxiu(title, author, author_url, time, content, category)
                 values(%s,%s,%s,%s,%s,%s) 
                 """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['category']))
-                log.msg("Item stored in db: %s" % item, level=log.DEBUG)
+                logging.info("Item stored in db: %s" % item)
    
     def handler_error(self, e):
-        log.err(e)
+        logging.error(e)
 
 
