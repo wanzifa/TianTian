@@ -67,9 +67,9 @@ class SQLStorePipeline(object):
                logging.debug("Item already stored in db: %s" % item['name'])
            else:
                tx.execute("""
-               insert into douban(title, author, author_url, time, content, book_name)
-               values(%s,%s,%s,%s,%s,%s) 
-               """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['book_name']))
+               insert into douban(title, author, author_url, time, content, book_name,book_url)
+               values(%s,%s,%s,%s,%s,%s,%s) 
+               """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['book_name'],item['book_url']))
                logging.info("Item stored in db: %s" % item)
    
     def handler_error(self, e):

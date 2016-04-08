@@ -40,3 +40,4 @@ class DoubanItem(scrapy.Item):
     time = scrapy.Field()
     content = scrapy.Field()
     book_name = scrapy.Field()
+    book_url = scrapy.Field()
