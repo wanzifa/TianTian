@@ -30,3 +30,13 @@ class HuxiuItem(scrapy.Item):
     time = scrapy.Field()
     content = scrapy.Field()
     category = scrapy.Field()
+
+class DoubanItem(scrapy.Item):
+    id = scrapy.Field()
+    name = scrapy.Field()
+    title = scrapy.Field()
+    author = scrapy.Field()
+    author_url = scrapy.Field()
+    time = scrapy.Field()
+    content = scrapy.Field()
+    book_name = scrapy.Field()
