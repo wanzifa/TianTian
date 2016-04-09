@@ -74,7 +74,8 @@ class ZhihuSpider(Spider):
         zhihu['author_url'] = 'https://www.zhihu.com' + sel.xpath("//div[@class='answer-head'][1]/div[@class='zm-item-answer-author-info'][1]/a[@class='author-link'][1]/@href").extract()[0]
         zhihu['title'] = title
         zhihu['category'] = category
-        zhihu['content'] = soup.find('div',class_="zm-editable-content clearfix").prettify().strip('<noscript>')
+        zhihu['content'] = soup.find('div',class_="zm-editable-content clearfix").prettify()
+        print zhihu['content']
         zhihu['time'] = sel.xpath("//a[@class='answer-date-link last_updated meta-item']/text()").extract()[0]
         zhihu['name'] = 'zhihu'
         return zhihu
