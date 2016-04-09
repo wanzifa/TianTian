@@ -71,6 +71,19 @@ class SQLStorePipeline(object):
                values(%s,%s,%s,%s,%s,%s,%s) 
                """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['book_name'],item['book_url']))
                logging.info("Item stored in db: %s" % item)
+        elif item['name'] == 'zhihu':
+           tx.execute(""" 
+                  select * from zhihu where author=%s and title=%s 
+           """,(item['author'],item['title']))
+           result = tx.fetchone()
+           if result:
+               logging.debug("Item already stored in db: %s" % item['name'])
+           else:
+               tx.execute("""
+               insert into zhihu(title, author, author_url, time, content, category)
+               values(%s,%s,%s,%s,%s,%s) 
+               """, (item['title'],item['author'],item['author_url'], item['time'], item['content'], item['category']))
+               logging.info("Item stored in db: %s" % item)
    
     def handler_error(self, e):
         logging.error(e)
