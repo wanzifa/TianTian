@@ -42,26 +42,39 @@ class ZhihuSpider(Spider):
         }
         login = s.post(login_url, data=data)
         explore = s.get('https://www.zhihu.com/explore')
+        explore2 = s.get('https://www.zhihu.com/node/ExploreAnswerListV2?params={"offset":5,"type":"day"}')
         sel_explore = Selector(text=explore.content)
-        for post in sel_explore.xpath("//div[@id='zh-recommend-list']/div").extract():
+        sel_explore2 = Selector(text=explore2.content)
+        #爬今日最热前五条
+        for i in range(1,6):
+            post = sel_explore.xpath("//div[@data-offset='{0}']".format(i)).extract()[0]
             post_sel = Selector(text=post)
-            post_title = post_sel.xpath("//h2/a/text()").extract()[0]
-            post_category = '编辑推荐'
-            post_url_pre = post_sel.xpath("//h2/a/@href").extract()[0]
-            post_url = post_url_pre if post_url_pre.startswith("http") else 'http://www.zhihu.com'+post_url_pre
+            post_title = post_sel.xpath("//h2/a[1]/text()").extract()[0]
+            post_category = '今日最热'
+            post_url_pre = post_sel.xpath("//h2/a[1]/@href").extract()[0]
+            post_url = post_url_pre if post_url_pre.startswith("http") else 'https://www.zhihu.com'+post_url_pre
             post_response = s.get(post_url)
             yield self.parse_item(post_response, post_title, post_category)
- 
+        #今日最热往后再爬五条
+        for i in range(6,11):
+            post2 = sel_explore2.xpath("//div[@data-offset='{0}']".format(i)).extract()[0]
+            post_sel2 = Selector(text=post2)
+            post_title2 = post_sel2.xpath("//h2/a[1]/text()").extract()[0]
+            post_category2 = '今日最热'
+            post_url_pre2 = post_sel2.xpath("//h2/a[1]/@href").extract()[0]
+            post_url2 = post_url_pre2 if post_url_pre2.startswith("http") else 'https://www.zhihu.com'+post_url_pre2
+            post_response2 = s.get(post_url2)
+            yield self.parse_item(post_response2, post_title2, post_category2)
+    
     def parse_item(self, response, title, category):
         zhihu = ZhihuItem()
         sel = Selector(text=response.content)
+        soup = BeautifulSoup(response.content, 'lxml')
+        zhihu['author'] = sel.xpath("//a[@class='author-link'][1]/text()").extract()[0]
+        zhihu['author_url'] = 'https://www.zhihu.com' + sel.xpath("//div[@class='answer-head'][1]/div[@class='zm-item-answer-author-info'][1]/a[@class='author-link'][1]/@href").extract()[0]
         zhihu['title'] = title
         zhihu['category'] = category
-        author_pre  = sel.xpath("//a[@class='author-link'][1]/text()").extract()
-        if not author_pre:
-            zhihu['author'] = sel.xpath("//div[@class='entry-meta']/a[@class='author name ng-binding'][1]/text()").extract()
-            print zhihu['author']
-            zhihu['author_url'] = sel.xpath("//a[@class='author name ng-binding'][1]/@href").extract()
-            zhihu['time'] = sel.xpath("//div[@class='entry-meta'][1]/time[1]/@ui-hover-title").extract()
-            print zhihu['time']
-    
+        zhihu['content'] = soup.find('div',class_="zm-editable-content clearfix").prettify().strip('<noscript>')
+        zhihu['time'] = sel.xpath("//a[@class='answer-date-link last_updated meta-item']/text()").extract()[0]
+        zhihu['name'] = 'zhihu'
+        return zhihu
