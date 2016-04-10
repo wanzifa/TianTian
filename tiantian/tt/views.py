@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Guoke,Douban
+from .models import Guoke,Douban,Zhihu
 
 def index(request):
     context_dict = {}
-    douban = Douban.objects.all()
-    context_dict['douban'] = douban
+    zhihu = Zhihu.objects.all()
+    context_dict['zhihu'] = zhihu
     return render(request, 'tt/index.html', context_dict)
     
