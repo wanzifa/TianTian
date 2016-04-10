@@ -10,6 +10,7 @@ import os
 from scrapy.http.request import Request
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import re
 
 class ZhihuSpider(Spider):
     name = "zhihu"
@@ -69,19 +70,17 @@ class ZhihuSpider(Spider):
     
     def parse_item(self, response, title, category):
         cookie = response.cookies
-        browser = webdriver.Firefox()
-        browser.get(response.url)
-        PageSource = browser.page_source
+        #browser = webdriver.Firefox()
+        #browser.get(response.url)
+        #PageSource = browser.page_source
         sel = Selector(text=response.content)
         zhihu = ZhihuItem()
-        sel2 = Selector(text=PageSource)
+        sel2 = response.content
         zhihu['author'] = sel.xpath("//a[@class='author-link'][1]/text()").extract()[0]
         zhihu['author_url'] = 'https://www.zhihu.com' + sel.xpath("//div[@class='answer-head'][1]/div[@class='zm-item-answer-author-info'][1]/a[@class='author-link'][1]/@href").extract()[0]
         zhihu['title'] = title
         zhihu['category'] = category
-        zhihu['content'] = sel2.xpath("//div[@class='zm-editable-content clearfix']").extract()[0]
-        print zhihu['content']
         zhihu['time'] = sel.xpath("//span[@class='answer-date-link-wrap'][1]/a[1]/text()").extract()[0]
-        browser.quit()
+        #browser.quit()
         zhihu['name'] = 'zhihu'
         return zhihu
