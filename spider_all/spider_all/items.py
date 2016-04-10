@@ -41,3 +41,12 @@ class DoubanItem(scrapy.Item):
     content = scrapy.Field()
     book_name = scrapy.Field()
     book_url = scrapy.Field()
+
+class ZhihuItem(scrapy.Item):
+    id = scrapy.Field()
+    name = scrapy.Field()
+    title = scrapy.Field()
+    author = scrapy.Field()
+    author_url = scrapy.Field()
+    time = scrapy.Field()
+    category = scrapy.Field()
