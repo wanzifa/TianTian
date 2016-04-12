@@ -8,6 +8,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+#from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 class Douban(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -51,13 +53,22 @@ class Huxiu(models.Model):
 
 class Zhihu(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
-    name = models.CharField(max_length=48, blank=True, null=True)
     time = models.CharField(max_length=48, blank=True, null=True)
     author = models.CharField(max_length=96, blank=True, null=True)
     author_url = models.CharField(max_length=256, blank=True, null=True)
-    content = models.TextField(blank=True, null=True)
     category = models.CharField(max_length=48, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'zhihu'
+
+#class User(models.Model):
+#    name = models.CharField(max_length=128)
+#    picture = models.ImageField()
+#    password = models.CharField(max_length=128)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    picture = models.ImageField(upload_to="images/",blank=True)
+
+    def __unicode__(self):
+        return self.user.username
