@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^tiantian/', include('tt.urls')),
+    url(r'^tiantian/', include('tt.urls','registration.backends.simple.urls')),
 ]
